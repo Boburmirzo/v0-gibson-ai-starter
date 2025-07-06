@@ -3,13 +3,7 @@ import { CodeBlock } from "@/components/code-block"
 import { ExternalLink } from "@/components/link"
 import { Navigation } from "@/components/navigation"
 import * as examples from "./examples"
-import dynamic from "next/dynamic"
-
-// Dynamically import the Greeting component to avoid SSR issues
-const Greeting = dynamic(() => import("@/components/greeting").then((mod) => ({ default: mod.Greeting })), {
-  ssr: false,
-  loading: () => <div>Loading greeting...</div>,
-})
+import { Greeting } from "@/components/greeting"
 
 export default function GettingStarted() {
   return (

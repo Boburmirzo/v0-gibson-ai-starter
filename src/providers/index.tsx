@@ -16,6 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           queries: {
             networkMode: "offlineFirst",
             refetchOnWindowFocus: false,
+            retry: false, // Disable retries to avoid issues during development
           },
         },
       }),
@@ -25,7 +26,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "/api/trpc",
+          url: typeof window !== "undefined" ? "/api/trpc" : "http://localhost:3000/api/trpc",
+          // Add error handling for fetch failures
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "same-origin",
+            }).catch((error) => {
+              console.warn("tRPC fetch failed:", error)
+              throw error
+            })
+          },
         }),
       ],
     }),
